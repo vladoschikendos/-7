@@ -1,29 +1,29 @@
 ﻿using System;
-using System.IO;
 
-namespace Task_8_3
+namespace Task_8_4
 {
     internal class Program
     {
+        static bool IsFormattable(object obj)
+        {
+            if (obj is IFormattable)
+            {
+                IFormattable f = obj as IFormattable;
+                return f != null;
+            }
+            return false;
+        }
+
         static void Main(string[] args)
         {
-            Console.WriteLine("===== УПРАЖНЕНИЕ 8.3 =====");
+            Console.WriteLine("===== УПРАЖНЕНИЕ 8.4 =====");
 
-            Console.Write("Введите полный путь к файлу: ");
-            string input = Console.ReadLine();
+            object[] objects = { 123, "строка", 3.14, new object(), DateTime.Now };
 
-            if (!File.Exists(input))
+            foreach (object o in objects)
             {
-                Console.WriteLine("Файл не существует. Работа завершена.");
-                Console.ReadKey();
-                return;
+                Console.WriteLine($"{o} ({o.GetType().Name}) реализует IFormattable: {IsFormattable(o)}");
             }
-
-            string output = "output.txt";
-            string content = File.ReadAllText(input);
-            File.WriteAllText(output, content.ToUpper());
-
-            Console.WriteLine($"Содержимое записано в {output} заглавными буквами.");
 
             Console.ReadKey();
         }
