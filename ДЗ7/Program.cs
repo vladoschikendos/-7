@@ -1,24 +1,29 @@
 ﻿using System;
+using System.IO;
 
-namespace Task_8_2
+namespace Task_8_3
 {
     internal class Program
     {
-        static string Reverse(string s)
-        {
-            char[] arr = s.ToCharArray();
-            Array.Reverse(arr);
-            return new string(arr);
-        }
-
         static void Main(string[] args)
         {
-            Console.WriteLine("===== УПРАЖНЕНИЕ 8.2 =====");
+            Console.WriteLine("===== УПРАЖНЕНИЕ 8.3 =====");
 
-            Console.Write("Введите строку: ");
-            string s = Console.ReadLine();
+            Console.Write("Введите полный путь к файлу: ");
+            string input = Console.ReadLine();
 
-            Console.WriteLine("В обратном порядке: " + Reverse(s));
+            if (!File.Exists(input))
+            {
+                Console.WriteLine("Файл не существует. Работа завершена.");
+                Console.ReadKey();
+                return;
+            }
+
+            string output = "output.txt";
+            string content = File.ReadAllText(input);
+            File.WriteAllText(output, content.ToUpper());
+
+            Console.WriteLine($"Содержимое записано в {output} заглавными буквами.");
 
             Console.ReadKey();
         }
