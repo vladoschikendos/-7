@@ -1,29 +1,48 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
-namespace Task_8_4
+namespace Task_8_1_Home
 {
     internal class Program
     {
-        static bool IsFormattable(object obj)
+        public static void SearchMail(ref string s)
         {
-            if (obj is IFormattable)
-            {
-                IFormattable f = obj as IFormattable;
-                return f != null;
-            }
-            return false;
+            int idx = s.IndexOf('#');
+            if (idx >= 0)
+                s = s.Substring(idx + 1).Trim();
         }
 
         static void Main(string[] args)
         {
-            Console.WriteLine("===== УПРАЖНЕНИЕ 8.4 =====");
+            Console.WriteLine("===== ДОМАШНЕЕ ЗАДАНИЕ 8.1 =====");
 
-            object[] objects = { 123, "строка", 3.14, new object(), DateTime.Now };
-
-            foreach (object o in objects)
+            string inputFile = "fio_mail.txt";
+            if (!File.Exists(inputFile))
             {
-                Console.WriteLine($"{o} ({o.GetType().Name}) реализует IFormattable: {IsFormattable(o)}");
+                File.WriteAllLines(inputFile, new[]
+                {
+                    "Иванов Иван Иванович # iviviv@mail.ru",
+                    "Петров Петр Петрович # petr@mail.ru"
+                });
+                Console.WriteLine($"Создан файл {inputFile}");
             }
+
+            string[] lines = File.ReadAllLines(inputFile);
+            List<string> emails = new List<string>();
+
+            foreach (string line in lines)
+            {
+                string s = line;
+                SearchMail(ref s);
+                emails.Add(s);
+            }
+
+            File.WriteAllLines("emails.txt", emails);
+
+            Console.WriteLine("Список адресов записан в emails.txt:");
+            foreach (string e in emails)
+                Console.WriteLine("  " + e);
 
             Console.ReadKey();
         }
