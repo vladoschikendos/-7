@@ -1,55 +1,26 @@
 ﻿using System;
 
-namespace Task_8_1
+namespace Task_8_2
 {
-    class BankAccount
-    {
-        public string Owner;
-        public decimal Balance;
-
-        public BankAccount(string owner, decimal balance)
-        {
-            Owner = owner;
-            Balance = balance;
-        }
-
-        public void Transfer(BankAccount from, decimal sum)
-        {
-            if (from.Balance < sum)
-            {
-                Console.WriteLine($"Недостаточно средств на счёте {from.Owner}");
-                return;
-            }
-            from.Balance -= sum;
-            this.Balance += sum;
-            Console.WriteLine($"Переведено {sum} от {from.Owner} к {this.Owner}");
-        }
-
-        public override string ToString()
-        {
-            return $"{Owner}: {Balance}";
-        }
-    }
-
     internal class Program
     {
+        static string Reverse(string s)
+        {
+            char[] arr = s.ToCharArray();
+            Array.Reverse(arr);
+            return new string(arr);
+        }
+
         static void Main(string[] args)
         {
-            Console.WriteLine("===== УПРАЖНЕНИЕ 8.1 =====");
+            Console.WriteLine("===== УПРАЖНЕНИЕ 8.2 =====");
 
-            BankAccount a = new BankAccount("Влад", 1000);
-            BankAccount b = new BankAccount("Иван", 500);
+            Console.Write("Введите строку: ");
+            string s = Console.ReadLine();
 
-            Console.WriteLine("До перевода:");
-            Console.WriteLine("  " + a);
-            Console.WriteLine("  " + b);
+            Console.WriteLine("В обратном порядке: " + Reverse(s));
 
-            b.Transfer(a, 300);
-
-            Console.WriteLine("После перевода:");
-            Console.WriteLine("  " + a);
-            Console.WriteLine("  " + b);
-
+            Console.ReadKey();
         }
     }
 }
