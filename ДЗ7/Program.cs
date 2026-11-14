@@ -1,38 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Task_8_2_Home
+namespace Vladmainproject
 {
-    class Song
+    class Employee
     {
-        string name;
-        string author;
-        public Song prev;
+        public string Name;
+        public List<Employee> Bosses = new List<Employee>();
+        public string Department;
 
-        public void SetName(string n) { name = n; }
-        public void SetAuthor(string a) { author = a; }
-        public void SetPrev(Song p) { prev = p; }
-
-        public string Title()
+        public Employee(string name, string department)
         {
-            return $"{name} — {author}";
+            Name = name;
+            Department = department;
         }
 
-        public void Print()
+        public void AddBoss(Employee boss)
         {
-            Console.WriteLine($"Песня: {name}, исполнитель: {author}");
+            Bosses.Add(boss);
         }
 
-        public override bool Equals(object d)
+        public bool TakesTask(Employee from)
         {
-            if (d is Song other)
-                return this.name == other.name && this.author == other.author;
-            return false;
+            return Bosses.Contains(from);
         }
 
-        public override int GetHashCode()
+        public override string ToString()
         {
-            return (name + author).GetHashCode();
+            return $"{Name} ({Department})";
+        }
+    }
+
+    class Task
+    {
+        public string Title;
+        public string TargetDepartment;
+
+        public Task(string title, string targetDepartment)
+        {
+            Title = title;
+            TargetDepartment = targetDepartment;
         }
     }
 
@@ -40,48 +47,92 @@ namespace Task_8_2_Home
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("===== ДОМАШНЕЕ ЗАДАНИЕ 8.2 =====");
+            Console.WriteLine("===== ИЕРАРХИЯ ФИРМЫ =====");
+            Employee timur = new Employee("Тимур", "начальство");
+            Employee rashid = new Employee("Рашид", "начальство");
+            Employee ilham = new Employee("Ильхам", "начальство");
+            Employee lukas = new Employee("Лукас", "бухгалтерия");
+            Employee orkady = new Employee("Оркадий", "начальство");
+            Employee volodya = new Employee("Володя", "начальство");
+            Employee ilshat = new Employee("Ильшат", "системщики");
+            Employee ivanych = new Employee("Иваныч", "системщики");
+            Employee ilya = new Employee("Илья", "системщики");
+            Employee vitya = new Employee("Витя", "системщики");
+            Employee zhenya = new Employee("Женя", "системщики");
+            Employee sergey = new Employee("Сергей", "разработчики");
+            Employee lyaysan = new Employee("Ляйсан", "разработчики");
+            Employee marat = new Employee("Марат", "разработчики");
+            Employee dina = new Employee("Дина", "разработчики");
+            Employee ildar = new Employee("Ильдар", "разработчики");
+            Employee anton = new Employee("Антон", "разработчики");
 
-            List<Song> songs = new List<Song>();
+            rashid.AddBoss(timur);
+            ilham.AddBoss(timur);
+            lukas.AddBoss(rashid);
+            orkady.AddBoss(ilham);
+            volodya.AddBoss(orkady);
+            ilshat.AddBoss(orkady);
+            sergey.AddBoss(orkady);
+            sergey.AddBoss(volodya);
+            ivanych.AddBoss(ilshat);
+            ilya.AddBoss(ilshat);
+            vitya.AddBoss(ilshat);
+            zhenya.AddBoss(ilshat);
+            lyaysan.AddBoss(sergey);
+            marat.AddBoss(lyaysan);
+            dina.AddBoss(lyaysan);
+            ildar.AddBoss(lyaysan);
+            anton.AddBoss(lyaysan);
 
-            Song s1 = new Song();
-            s1.SetName("Кукла колдуна"); s1.SetAuthor("Король и Шут");
-            songs.Add(s1);
+            List<Employee> all = new List<Employee>
+            {
+                timur, rashid, ilham, lukas,
+                orkady, volodya,
+                ilshat, ivanych, ilya, vitya, zhenya,
+                sergey, lyaysan, marat, dina, ildar, anton
+            };
 
-            Song s2 = new Song();
-            s2.SetName("Группа крови"); s2.SetAuthor("Кино");
-            songs.Add(s2);
+            List<Task> tasks = new List<Task>
+            {
+                new Task("Настроить сеть", "системщики"),
+                new Task("Починить принтер", "системщики"),
+                new Task("Написать модуль бухгалтерии", "разработчики"),
+                new Task("Обновить сайт", "разработчики"),
+                new Task("Провести совещание", "начальство"),
+                new Task("Подписать отчёт", "начальство")
+            };
 
-            Song s3 = new Song();
-            s3.SetName("Кукла колдуна"); s3.SetAuthor("Король и Шут");
-            songs.Add(s3);
+            Console.WriteLine("\nЗадачи:");
+            foreach (Task t in tasks)
+                Console.WriteLine($"  «{t.Title}» → {t.TargetDepartment}");
 
-            Song s4 = new Song();
-            s4.SetName("Владимирский централ"); s4.SetAuthor("Михаил Круг");
-            songs.Add(s4);
+            Console.WriteLine("\n===== НАЗНАЧЕНИЕ ЗАДАЧ =====");
 
-            s1.SetPrev(null);
-            s2.SetPrev(s1);
-            s3.SetPrev(s2);
-            s4.SetPrev(s3);
+            AssignTask(timur, rashid, tasks[0]);
+            AssignTask(timur, dina, tasks[0]);
+            AssignTask(sergey, dina, tasks[2]);
+            AssignTask(orkady, sergey, tasks[3]);
+            AssignTask(volodya, sergey, tasks[3]);
+            AssignTask(lyaysan, marat, tasks[2]);
+            AssignTask(ilshat, ilya, tasks[1]);
+            AssignTask(ivanych, ilya, tasks[1]);
+            AssignTask(timur, ilham, tasks[4]);
+            AssignTask(rashid, lukas, tasks[5]);
+            AssignTask(dina, lyaysan, tasks[2]);
 
-            Console.WriteLine("Список песен:");
-            foreach (Song song in songs)
-                song.Print();
+        }
 
-            Console.WriteLine("\nСравнение первой и второй песни:");
-            if (songs[0].Equals(songs[1]))
-                Console.WriteLine("  Песни одинаковые");
+        static void AssignTask(Employee from, Employee to, Task task)
+        {
+            Console.WriteLine($"\nОт {from.Name} даётся задача «{task.Title}» сотруднику {to.Name}.");
+
+            if (task.TargetDepartment != to.Department && to.Department != "начальство")
+                Console.WriteLine($"Задача для {task.TargetDepartment}, а {to.Name} — {to.Department}");
+
+            if (to.TakesTask(from))
+                Console.WriteLine($"{to.Name} БЕРЁТ задачу.");
             else
-                Console.WriteLine("  Песни разные");
-
-            Console.WriteLine("\nСравнение первой и третьей песни:");
-            if (songs[0].Equals(songs[2]))
-                Console.WriteLine("  Песни одинаковые");
-            else
-                Console.WriteLine("  Песни разные");
-
-            Console.ReadKey();
+                Console.WriteLine($"{to.Name} НЕ БЕРЁТ задачу (не прямое руководство).");
         }
     }
 }
